@@ -1,0 +1,1056 @@
+{
+  "info": {
+    "_postman_id": "b1a09b23-a82d-4621-aca4-4cbab934d24f",
+    "name": "Automation Excercise",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "53443445",
+    "_collection_link": "https://go.postman.co/collection/53443445-b1a09b23-a82d-4621-aca4-4cbab934d24f?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Get All Products List",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "jsonData = pm.response.json();",
+              "",
+              "pm.test(\"Business responseCode is 200\", function () {",
+              "    pm.expect(jsonData).to.have.property(\"responseCode\");",
+              "    pm.expect(jsonData.responseCode).to.eql(200);",
+              "});",
+              "",
+              "pm.test(\"Response contains products array\", function () {",
+              "    pm.expect(jsonData).to.have.property(\"products\");",
+              "    pm.expect(jsonData.products).to.be.an(\"array\");",
+              "});",
+              "",
+              "pm.test(\"Products array is not empty\", function () {",
+              "    pm.expect(jsonData.products.length).to.be.greaterThan(0);",
+              "});",
+              "",
+              "pm.test(\"Each product has required core fields\", function () {",
+              "    jsonData.products.forEach(function (product) {",
+              "        pm.expect(product).to.have.property(\"id\");",
+              "        pm.expect(product).to.have.property(\"name\");",
+              "        pm.expect(product).to.have.property(\"price\");",
+              "        pm.expect(product).to.have.property(\"brand\");",
+              "        pm.expect(product).to.have.property(\"category\");",
+              "    });",
+              "});",
+              "",
+              "pm.test(\"Each required field has correct data type\", function () {",
+              "    jsonData.products.forEach(function (product) {",
+              "        pm.expect(product.id).to.be.a(\"number\");",
+              "        pm.expect(product.name).to.be.a(\"string\").and.not.empty;",
+              "        pm.expect(product.price).to.be.a(\"string\").and.not.empty;",
+              "        pm.expect(product.brand).to.be.a(\"string\").and.not.empty;",
+              "        pm.expect(product.category).to.be.an(\"object\");",
+              "    });",
+              "});",
+              "",
+              "pm.test(\"Nested category structure is valid\", function () {",
+              "    jsonData.products.forEach(function (product) {",
+              "        pm.expect(product.category).to.have.property(\"category\");",
+              "        pm.expect(product.category.category).to.be.a(\"string\").and.not.empty;",
+              "",
+              "        pm.expect(product.category).to.have.property(\"usertype\");",
+              "        pm.expect(product.category.usertype).to.be.an(\"object\");",
+              "        pm.expect(product.category.usertype).to.have.property(\"usertype\");",
+              "        pm.expect(product.category.usertype.usertype).to.be.a(\"string\").and.not.empty;",
+              "    });",
+              "});",
+              "",
+              "pm.test(\"Product IDs are unique\", function () {",
+              "    const ids = jsonData.products.map(function (product) {",
+              "        return product.id;",
+              "    });",
+              "    const uniqueIds = new Set(ids);",
+              "    pm.expect(uniqueIds.size).to.eql(ids.length);",
+              "});",
+              "",
+              "",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/productsList",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "productsList"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "POST To All Products List",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "let jsonData;",
+              "",
+              "pm.test(\"Response body is valid JSON\", function () {",
+              "    jsonData = pm.response.json();",
+              "    pm.expect(jsonData).to.be.an(\"object\");",
+              "});",
+              "",
+              "pm.test(\"HTTP status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test(\"Business responseCode is 405\", function () {",
+              "    pm.expect(jsonData).to.have.property(\"responseCode\");",
+              "    pm.expect(jsonData.responseCode).to.eql(405);",
+              "});",
+              "",
+              "pm.test(\"Response contains message field\", function () {",
+              "    pm.expect(jsonData).to.have.property(\"message\");",
+              "    pm.expect(jsonData.message).to.be.a(\"string\").and.not.empty;",
+              "});",
+              "",
+              "pm.test(\"Response message is correct\", function () {",
+              "    pm.expect(jsonData.message).to.eql(\"This request method is not supported.\");",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/productsList",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "productsList"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get All Brands List",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "let jsonData;",
+              "",
+              "pm.test(\"Business responseCode is 200\", function () {",
+              "    jsonData = pm.response.json();",
+              "    pm.expect(jsonData).to.have.property(\"responseCode\");",
+              "    pm.expect(jsonData.responseCode).to.eql(200);",
+              "});",
+              "",
+              "pm.test(\"Response contains brands array\", function () {",
+              "    pm.expect(jsonData).to.have.property(\"brands\");",
+              "    pm.expect(jsonData.brands).to.be.an(\"array\");",
+              "});",
+              "",
+              "pm.test(\"Brands array is not empty\", function () {",
+              "    pm.expect(jsonData.brands.length).to.be.greaterThan(0);",
+              "});",
+              "",
+              "pm.test(\"Each brand has required fields\", function () {",
+              "    jsonData.brands.forEach(function (brand) {",
+              "        pm.expect(brand).to.have.property(\"id\");",
+              "        pm.expect(brand).to.have.property(\"brand\");",
+              "    });",
+              "});",
+              "",
+              "pm.test(\"Each brand field has correct data type\", function () {",
+              "    jsonData.brands.forEach(function (brand) {",
+              "        pm.expect(brand.id).to.be.a(\"number\");",
+              "        pm.expect(brand.brand).to.be.a(\"string\").and.not.empty;",
+              "    });",
+              "});",
+              "",
+              "pm.test(\"Brand IDs are unique\", function () {",
+              "    const ids = jsonData.brands.map(b => b.id);",
+              "    pm.expect(new Set(ids).size).to.eql(ids.length);",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/brandsList",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "brandsList"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "PUT To All Brands List",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "let jsonData;",
+              "",
+              "pm.test(\"Business responseCode is 405\", function () {",
+              "    jsonData = pm.response.json();",
+              "    pm.expect(jsonData).to.have.property(\"responseCode\");",
+              "    pm.expect(jsonData.responseCode).to.eql(405);",
+              "});",
+              "",
+              "pm.test(\"Response contains message field\", function () {",
+              "    pm.expect(jsonData).to.have.property(\"message\");",
+              "    pm.expect(jsonData.message).to.be.a(\"string\").and.not.empty;",
+              "});",
+              "",
+              "pm.test(\"Response message is correct\", function () {",
+              "    pm.expect(jsonData.message).to.eql(\"This request method is not supported.\");",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/brandsList",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "brandsList"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "POST To Search Product",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "let jsonData;",
+              "",
+              "pm.test(\"Business responseCode is 200\", function () {",
+              "    jsonData = pm.response.json();",
+              "    pm.expect(jsonData).to.have.property(\"responseCode\");",
+              "    pm.expect(jsonData.responseCode).to.eql(200);",
+              "});",
+              "",
+              "pm.test(\"Response contains products array\", function () {",
+              "    pm.expect(jsonData).to.have.property(\"products\");",
+              "    pm.expect(jsonData.products).to.be.an(\"array\");",
+              "});",
+              "",
+              "pm.test(\"Products array is not empty\", function () {",
+              "    pm.expect(jsonData.products.length).to.be.greaterThan(0);",
+              "});",
+              "",
+              "pm.test(\"Search results are relevant to query\", function () {",
+              "    const query = pm.request.url.query.find(q => q.key === \"search_product\")?.value || \"\";",
+              "    jsonData.products.forEach(function (product) {",
+              "        pm.expect(product.name.toLowerCase()).to.include(query.toLowerCase());",
+              "    });",
+              "});",
+              "",
+              "pm.test(\"Each product has required core fields\", function () {",
+              "    jsonData.products.forEach(function (product) {",
+              "        pm.expect(product).to.have.property(\"id\");",
+              "        pm.expect(product).to.have.property(\"name\");",
+              "        pm.expect(product).to.have.property(\"price\");",
+              "        pm.expect(product).to.have.property(\"brand\");",
+              "        pm.expect(product).to.have.property(\"category\");",
+              "    });",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "urlencoded",
+          "urlencoded": [
+            {
+              "key": "search_product",
+              "value": "jean",
+              "type": "text",
+              "uuid": "89c54bb0-7071-4762-a5a9-123a5a27bac0"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{base_url}}/api/searchProduct",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "searchProduct"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "POST To Search Product without search_product parameter",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "let jsonData;",
+              "",
+              "pm.test(\"Business responseCode is 400\", function () {",
+              "    jsonData = pm.response.json();",
+              "    pm.expect(jsonData).to.have.property(\"responseCode\");",
+              "    pm.expect(jsonData.responseCode).to.eql(400);",
+              "});",
+              "",
+              "pm.test(\"Response contains message field\", function () {",
+              "    pm.expect(jsonData).to.have.property(\"message\");",
+              "    pm.expect(jsonData.message).to.be.a(\"string\").and.not.empty;",
+              "});",
+              "",
+              "pm.test(\"Error message is correct\", function () {",
+              "    pm.expect(jsonData.message).to.eql(\"Bad request, search_product parameter is missing in POST request.\");",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/searchProduct",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "searchProduct"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "POST To Verify Login with valid details",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "let jsonData;",
+              "",
+              "pm.test(\"Business responseCode is 200\", function () {",
+              "    jsonData = pm.response.json();",
+              "    pm.expect(jsonData).to.have.property(\"responseCode\");",
+              "    pm.expect(jsonData.responseCode).to.eql(200);",
+              "});",
+              "",
+              "pm.test(\"Response contains message field\", function () {",
+              "    pm.expect(jsonData).to.have.property(\"message\");",
+              "    pm.expect(jsonData.message).to.be.a(\"string\").and.not.empty;",
+              "});",
+              "",
+              "pm.test(\"Success message is correct\", function () {",
+              "    pm.expect(jsonData.message).to.eql(\"User exists!\");",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "urlencoded",
+          "urlencoded": [
+            {
+              "key": "email",
+              "value": "xeyid41739@mugstock.com",
+              "type": "text",
+              "uuid": "faaecf36-dda6-45e4-8626-2ae5f9127115"
+            },
+            {
+              "key": "password",
+              "value": "12345678",
+              "type": "text",
+              "uuid": "82353c3e-63ae-42c7-a3ae-7e658a633ad4"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{base_url}}/api/verifyLogin",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "verifyLogin"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "POST To Verify Login without email parameter",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "let jsonData;",
+              "",
+              "pm.test(\"Business responseCode is 400\", function () {",
+              "    jsonData = pm.response.json();",
+              "    pm.expect(jsonData).to.have.property(\"responseCode\");",
+              "    pm.expect(jsonData.responseCode).to.eql(400);",
+              "});",
+              "",
+              "pm.test(\"Response contains message field\", function () {",
+              "    pm.expect(jsonData).to.have.property(\"message\");",
+              "    pm.expect(jsonData.message).to.be.a(\"string\").and.not.empty;",
+              "});",
+              "",
+              "pm.test(\"Error message is correct\", function () {",
+              "    pm.expect(jsonData.message).to.eql(\"Bad request, email or password parameter is missing in POST request.\");",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "urlencoded",
+          "urlencoded": [
+            {
+              "key": "password",
+              "value": "12345678",
+              "type": "text",
+              "uuid": "ae64b559-1234-4b86-b503-2ffdab2d7d2a"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{base_url}}/api/verifyLogin",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "verifyLogin"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "DELETE To Verify Login",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "let jsonData;",
+              "",
+              "pm.test(\"Business responseCode is 405\", function () {",
+              "    jsonData = pm.response.json();",
+              "    pm.expect(jsonData).to.have.property(\"responseCode\");",
+              "    pm.expect(jsonData.responseCode).to.eql(405);",
+              "});",
+              "",
+              "pm.test(\"Response contains message field\", function () {",
+              "    pm.expect(jsonData).to.have.property(\"message\");",
+              "    pm.expect(jsonData.message).to.be.a(\"string\").and.not.empty;",
+              "});",
+              "",
+              "pm.test(\"Error message is correct\", function () {",
+              "    pm.expect(jsonData.message).to.eql(\"This request method is not supported.\");",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/verifyLogin",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "verifyLogin"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "POST To Verify Login with invalid details",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "let jsonData;\r",
+              "\r",
+              "pm.test(\"Business responseCode is 404\", function () {\r",
+              "    jsonData = pm.response.json();\r",
+              "    pm.expect(jsonData).to.have.property(\"responseCode\");\r",
+              "    pm.expect(jsonData.responseCode).to.eql(404);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Response contains message field\", function () {\r",
+              "    pm.expect(jsonData).to.have.property(\"message\");\r",
+              "    pm.expect(jsonData.message).to.be.a(\"string\").and.not.empty;\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Error message is correct\", function () {\r",
+              "    pm.expect(jsonData.message).to.eql(\"User not found!\");\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "urlencoded",
+          "urlencoded": [
+            {
+              "key": "email",
+              "value": "xeyid4179@mugstock.com",
+              "type": "text",
+              "uuid": "a0ee6ec7-3a7b-4f97-a118-9e81e9ba5f85"
+            },
+            {
+              "key": "password",
+              "value": "12345678",
+              "type": "text",
+              "uuid": "d8410216-b056-498b-b0cb-b33a786f3eb1"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{base_url}}/api/verifyLogin",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "verifyLogin"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "POST To Create/Register User Account",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "let jsonData;\r",
+              "\r",
+              "pm.test(\"Business responseCode is 201\", function () {\r",
+              "    jsonData = pm.response.json();\r",
+              "    pm.expect(jsonData).to.have.property(\"responseCode\");\r",
+              "    pm.expect(jsonData.responseCode).to.eql(201);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Response contains message field\", function () {\r",
+              "    pm.expect(jsonData).to.have.property(\"message\");\r",
+              "    pm.expect(jsonData.message).to.be.a(\"string\").and.not.empty;\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Success message is correct\", function () {\r",
+              "    pm.expect(jsonData.message).to.eql(\"User created!\");\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "urlencoded",
+          "urlencoded": [
+            {
+              "key": "name",
+              "value": "ziad",
+              "type": "text"
+            },
+            {
+              "key": "email",
+              "value": "ziadmohye61@gmail.com",
+              "type": "text"
+            },
+            {
+              "key": "password",
+              "value": "12345678",
+              "type": "text"
+            },
+            {
+              "key": "title",
+              "value": "Mr",
+              "type": "text"
+            },
+            {
+              "key": "birth_date",
+              "value": "1",
+              "type": "text"
+            },
+            {
+              "key": "birth_month",
+              "value": "10",
+              "type": "text"
+            },
+            {
+              "key": "birth_year",
+              "value": "2002",
+              "type": "text"
+            },
+            {
+              "key": "firstname",
+              "value": "ziad",
+              "type": "text"
+            },
+            {
+              "key": "lastname",
+              "value": "mohey",
+              "type": "text"
+            },
+            {
+              "key": "company",
+              "value": "amit",
+              "type": "text"
+            },
+            {
+              "key": "address1",
+              "value": "inb hag ",
+              "type": "text"
+            },
+            {
+              "key": "address2",
+              "value": "fersf sfd",
+              "type": "text"
+            },
+            {
+              "key": "country",
+              "value": "egypt",
+              "type": "text"
+            },
+            {
+              "key": "zipcode",
+              "value": "34143",
+              "type": "text"
+            },
+            {
+              "key": "state",
+              "value": "cairo",
+              "type": "text"
+            },
+            {
+              "key": "city",
+              "value": "nas city",
+              "type": "text"
+            },
+            {
+              "key": "mobile_number",
+              "value": "0102368795a",
+              "type": "text"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{base_url}}/api/createAccount",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "createAccount"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "DELETE METHOD To Delete User Account",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "let jsonData;\r",
+              "\r",
+              "pm.test(\"Business responseCode is 200\", function () {\r",
+              "    jsonData = pm.response.json();\r",
+              "    pm.expect(jsonData).to.have.property(\"responseCode\");\r",
+              "    pm.expect(jsonData.responseCode).to.eql(200);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Response contains message field\", function () {\r",
+              "    pm.expect(jsonData).to.have.property(\"message\");\r",
+              "    pm.expect(jsonData.message).to.be.a(\"string\").and.not.empty;\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Success message is correct\", function () {\r",
+              "    pm.expect(jsonData.message).to.eql(\"Account deleted!\");\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "body": {
+          "mode": "urlencoded",
+          "urlencoded": [
+            {
+              "key": "email",
+              "value": "ziadmohye61@gmail.com",
+              "type": "text"
+            },
+            {
+              "key": "password",
+              "value": "12345678",
+              "type": "text"
+            }
+          ]
+        },
+        "url": {
+          "raw": "https://automationexercise.com/api/deleteAccount",
+          "protocol": "https",
+          "host": [
+            "automationexercise",
+            "com"
+          ],
+          "path": [
+            "api",
+            "deleteAccount"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "PUT METHOD To Update User Account",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "let jsonData;\r",
+              "\r",
+              "pm.test(\"Business responseCode is 200\", function () {\r",
+              "    jsonData = pm.response.json();\r",
+              "    pm.expect(jsonData).to.have.property(\"responseCode\");\r",
+              "    pm.expect(jsonData.responseCode).to.eql(200);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Response contains message field\", function () {\r",
+              "    pm.expect(jsonData).to.have.property(\"message\");\r",
+              "    pm.expect(jsonData.message).to.be.a(\"string\").and.not.empty;\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Success message is correct\", function () {\r",
+              "    pm.expect(jsonData.message).to.eql(\"User updated!\");\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "urlencoded",
+          "urlencoded": [
+            {
+              "key": "name",
+              "value": "ziad",
+              "type": "text"
+            },
+            {
+              "key": "email",
+              "value": "xeyid41739@mugstock.com",
+              "type": "text"
+            },
+            {
+              "key": "password",
+              "value": "12345678",
+              "type": "text"
+            },
+            {
+              "key": "title",
+              "value": "Mr",
+              "type": "text"
+            },
+            {
+              "key": "birth_date",
+              "value": "1",
+              "type": "text"
+            },
+            {
+              "key": "birth_month",
+              "value": "10",
+              "type": "text"
+            },
+            {
+              "key": "birth_year",
+              "value": "2002",
+              "type": "text"
+            },
+            {
+              "key": "firstname",
+              "value": "ziad",
+              "type": "text"
+            },
+            {
+              "key": "lastname",
+              "value": "mohey",
+              "type": "text"
+            },
+            {
+              "key": "company",
+              "value": "amit",
+              "type": "text"
+            },
+            {
+              "key": "address1",
+              "value": "inb hag ",
+              "type": "text"
+            },
+            {
+              "key": "address2",
+              "value": "fersf sfd",
+              "type": "text"
+            },
+            {
+              "key": "country",
+              "value": "egypt",
+              "type": "text"
+            },
+            {
+              "key": "zipcode",
+              "value": "34143",
+              "type": "text"
+            },
+            {
+              "key": "state",
+              "value": "cairo",
+              "type": "text"
+            },
+            {
+              "key": "city",
+              "value": "nas city",
+              "type": "text"
+            },
+            {
+              "key": "mobile_number",
+              "value": "0102368795",
+              "type": "text"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{base_url}}/api/updateAccount",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "updateAccount"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "GET user account detail by email",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "let jsonData;",
+              "",
+              "pm.test(\"Business responseCode is 200\", function () {",
+              "    jsonData = pm.response.json();",
+              "    pm.expect(jsonData).to.have.property(\"responseCode\");",
+              "    pm.expect(jsonData.responseCode).to.eql(200);",
+              "});",
+              "",
+              "pm.test(\"Response contains user object\", function () {",
+              "    pm.expect(jsonData).to.have.property(\"user\");",
+              "    pm.expect(jsonData.user).to.be.an(\"object\");",
+              "});",
+              "",
+              "pm.test(\"User object contains required fields\", function () {",
+              "    const user = jsonData.user;",
+              "",
+              "    pm.expect(user).to.have.property(\"id\");",
+              "    pm.expect(user).to.have.property(\"name\");",
+              "    pm.expect(user).to.have.property(\"email\");",
+              "",
+              "    pm.expect(user).to.have.property(\"first_name\");",
+              "    pm.expect(user).to.have.property(\"last_name\");",
+              "    pm.expect(user).to.have.property(\"address1\");",
+              "    pm.expect(user).to.have.property(\"country\");",
+              "});",
+              "",
+              "pm.test(\"User fields have correct data types\", function () {",
+              "    const user = jsonData.user;",
+              "",
+              "    pm.expect(user.id).to.be.a(\"number\");",
+              "    pm.expect(user.name).to.be.a(\"string\").and.not.empty;",
+              "    pm.expect(user.email).to.be.a(\"string\").and.not.empty;",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://automationexercise.com/api/getUserDetailByEmail?email=xeyid41739@mugstock.com",
+          "protocol": "https",
+          "host": [
+            "automationexercise",
+            "com"
+          ],
+          "path": [
+            "api",
+            "getUserDetailByEmail"
+          ],
+          "query": [
+            {
+              "key": "email",
+              "value": "xeyid41739@mugstock.com"
+            }
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          "let jsonData;\r",
+          "\r",
+          "pm.test(\"Response body is valid JSON\", function () {\r",
+          "    jsonData = pm.response.json();\r",
+          "    pm.expect(jsonData).to.be.an(\"object\");\r",
+          "});\r",
+          "\r",
+          "pm.test(\"HTTP status code is 200\", function () {\r",
+          "    pm.response.to.have.status(200);\r",
+          "});\r",
+          "\r",
+          "pm.test(\"Response time is below 2000 ms\", function () {\r",
+          "    pm.expect(pm.response.responseTime).to.be.below(2000);\r",
+          "});"
+        ]
+      }
+    }
+  ]
+}
